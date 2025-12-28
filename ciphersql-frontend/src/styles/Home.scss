@@ -1,0 +1,155 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.home {
+  min-height: 100vh;
+  width: 100%; // fills full width (avoids tiny gap)
+  background-color: $bg-app;
+  color: $text-main;
+  font-family: 'Inter', system-ui, sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+  overflow-x: hidden; // hide accidental horizontal scroll
+
+  &__header {
+    background: $bg-panel;
+    padding: 1.5rem 2rem; // slightly tighter header spacing
+    border-bottom: 1px solid $border;
+    margin-bottom: 3rem;
+    width: 100%;
+    
+    // Left/Right layout
+    display: flex;
+    flex-direction: row; 
+    align-items: center;
+    justify-content: space-between; 
+
+    // Logo (left)
+    .logo-main {
+      font-family: 'JetBrains Mono', monospace; // stick to mono for the logo
+      font-size: 1.8rem; // slightly smaller for small phones
+      font-weight: 800;
+      color: $text-main;
+      letter-spacing: -1px;
+      
+      span { color: $accent; }
+    }
+
+    // Theme toggle (right)
+    .theme-toggle-wrapper {
+        display: flex;
+        align-items: center;
+    }
+  }
+
+  &__grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    padding-bottom: 4rem;
+    
+    // Responsive grid
+    // min card width 280px for small screens (<350px)
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    
+    // center cards on narrow screens
+    @media (max-width: 600px) {
+        justify-content: center;
+    }
+  }
+}
+
+.theme-toggle {
+  background: none;
+  border: 1px solid $border;
+  color: $text-main;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background 0.2s;
+  &:hover { background: rgba(255, 255, 255, 0.05); }
+}
+
+.card {
+  position: relative;
+  background: $bg-panel;
+  border: 1px solid $border;
+  border-radius: 8px;
+  padding: 1.5rem;
+  padding-top: 3.5rem;
+  transition: transform 0.2s, border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  height: 100%; // make cards line up in height
+
+  &:hover {
+    border-color: $accent;
+    transform: translateY(-4px);
+  }
+
+  &__badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 80px;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 6px 0;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &--easy { background: var(--success-bg); color: var(--success-text); }
+    &--medium { background: rgba(255, 161, 22, 0.15); color: #ffa116; }
+    &--hard { background: rgba(239, 71, 67, 0.15); color: #ef4743; }
+  }
+
+  &__title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: $text-main;
+  }
+
+  &__question {
+    color: $text-muted;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+    line-height: 1.5;
+  }
+
+  &__btn {
+    text-align: center;
+    background: $bg-app;
+    border: 1px solid $border;
+    color: $text-main;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s;
+    text-decoration: none;
+    
+    &:hover { 
+      background: var(--card-hover); 
+      border-color: $text-main; 
+    }
+  }
+}
+
+// extra tweak for very small screens
+@media (max-width: 350px) {
+  .home__header {
+    padding: 1rem;
+    .logo-main { font-size: 1.4rem; }
+  }
+  
+  .home__grid {
+    padding: 0 1rem;
+    grid-template-columns: 1fr; // single column on tiny screens
+  }
+}

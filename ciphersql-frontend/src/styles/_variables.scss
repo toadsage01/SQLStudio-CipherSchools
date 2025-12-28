@@ -1,0 +1,47 @@
+:root {
+  /* Dark theme (default) */
+  --bg-app: #1a1a1a;
+  --bg-panel: #262626;
+  --border: #3e3e3e;
+  --text-main: #eff1f6;
+  --text-muted: #9ca3af;
+  --accent: #ffa116; 
+  --card-hover: #4b4b4b;
+  
+  /* Status colors */
+  --success-bg: rgba(44, 187, 93, 0.2);
+  --success-text: #2cbb5d;
+  --danger-bg: rgba(239, 71, 67, 0.15);
+  --danger-text: #ef4743;
+}
+
+[data-theme='light'] {
+  /* Light theme overrides */
+  --bg-app: #ffffff;
+  --bg-panel: #f3f4f6; 
+  --border: #e5e7eb;
+  --text-main: #1f2937; 
+  --text-muted: #6b7280;
+  --accent: #d97706; 
+  --card-hover: #e5e7eb;
+  
+  --success-bg: #dcfce7;
+  --success-text: #166534;
+  --danger-bg: #fee2e2;
+  --danger-text: #ef4444;
+}
+
+/* Map CSS vars to Sass vars */
+$bg-app: var(--bg-app);
+$bg-panel: var(--bg-panel);
+$border: var(--border);
+$text-main: var(--text-main);
+$text-muted: var(--text-muted);
+$accent: var(--accent);
+$card-hover: var(--card-hover);
+
+/* Extra vars I use for buttons/badges */
+$success: var(--success-text);
+$success-bg: var(--success-bg);
+$danger: var(--danger-text);
+$danger-bg: var(--danger-bg);

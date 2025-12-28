@@ -1,0 +1,363 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.workspace {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: $bg-app;
+  color: $text-main;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow: hidden;
+  transition: background-color 0.3s, color 0.3s;
+
+  // Header
+  &__header {
+    height: 60px;
+    background: $bg-panel;
+    border-bottom: 1px solid $border;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1.5rem;
+    flex-shrink: 0;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      
+      .logo-text {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: $text-main;
+        text-decoration: none;
+        letter-spacing: -0.5px;
+        
+        span { color: $accent; }
+      }
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid $border;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background 0.2s;
+      
+      &:hover { background: rgba(255, 255, 255, 0.05); }
+    }
+  }
+
+  // Mobile tab bar (hidden on desktop)
+  .mobile-tab-bar {
+    display: none; // hidden by default
+    background: $bg-panel;
+    border-bottom: 1px solid $border;
+    flex-shrink: 0;
+
+    button {
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      color: $text-muted;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &.active {
+        color: $text-main;
+        border-bottom-color: $accent;
+        background: rgba(255, 255, 255, 0.02);
+      }
+    }
+  }
+
+  // Main layout
+  &__main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+}
+
+// Left panel (problem description)
+.panel-left {
+  width: 40%; // desktop width
+  border-right: 1px solid $border;
+  background: $bg-panel;
+  display: flex;
+  flex-direction: column;
+
+  .panel-content {
+    padding: 1.5rem;
+    overflow-y: auto;
+    
+    // tiny scrollbar
+    &::-webkit-scrollbar { width: 6px; }
+    &::-webkit-scrollbar-thumb { background: $border; border-radius: 3px; }
+  }
+
+  h3 { 
+    font-size: 1.1rem; 
+    color: $text-main; 
+    margin: 0 0 0.5rem 0; 
+  }
+
+  .difficulty-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: $text-muted;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+  }
+
+  .question-text { 
+    line-height: 1.7; 
+    font-size: 0.95rem; 
+    color: $text-main;
+  }
+  
+  .divider { height: 1px; background: $border; margin: 2rem 0; }
+  
+  // Schema styles
+  .schema-box {
+    background: $bg-app;
+    border: 1px solid $border;
+    border-radius: 6px;
+    margin-top: 1rem;
+    overflow: hidden;
+    
+    .table-name { 
+      padding: 8px 12px; 
+      background: rgba(255,255,255,0.03); 
+      font-size: 0.85rem; 
+      font-weight: bold; 
+      border-bottom: 1px solid $border; 
+      color: $text-muted;
+    }
+    
+    .columns-list {
+      .col-item { 
+        display: flex; 
+        justify-content: space-between; 
+        padding: 8px 12px; 
+        font-family: 'JetBrains Mono', monospace; 
+        font-size: 0.8rem; 
+        color: $text-muted; 
+        border-bottom: 1px solid $border; 
+        
+        &:last-child { border-bottom: none; }
+        .c-type { color: $accent; opacity: 0.8; }
+      }
+    }
+  }
+}
+
+// Right panel (editor + actions + result)
+.panel-right {
+  flex: 1;
+  background: $bg-app;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  
+  // Editor section
+  .editor-wrapper { 
+    flex: 1; 
+    position: relative; 
+    min-height: 200px;
+  }
+
+  // Action bar between code and result
+  .action-bar-strip {
+    height: 52px;
+    background: $bg-panel;
+    border-top: 1px solid $border;
+    border-bottom: 1px solid $border;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+    flex-shrink: 0;
+
+    .ab-left {
+      .status-badge {
+        font-size: 0.85rem;
+        font-weight: 700;
+        padding: 6px 12px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        &.success { background: var(--success-bg); color: var(--success-text); }
+        &.fail { background: rgba(239, 71, 67, 0.15); color: #ef4743; }
+      }
+    }
+
+    .ab-right {
+      display: flex;
+      gap: 0.75rem;
+      
+      button {
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: filter 0.2s;
+
+        &:disabled { opacity: 0.5; cursor: not-allowed; }
+      }
+      
+      .btn-hint { background: rgba(255, 255, 255, 0.1); color: $text-main; border: 1px solid transparent; &:hover { border-color: $text-muted; } }
+      .btn-run { background: $text-main; color: $bg-app; &:hover { filter: brightness(0.9); } }
+      .btn-submit { 
+        background: $success; 
+        color: white; 
+        opacity: 0.4; 
+        cursor: not-allowed;
+        &:enabled { opacity: 1; cursor: pointer; &:hover { filter: brightness(1.1); } }
+      }
+    }
+  }
+  
+  // Result section
+  .output-wrapper {
+    height: 35%; // fixed height on desktop
+    background: $bg-app;
+    display: flex;
+    flex-direction: column;
+    
+    .output-header { 
+      padding: 10px 1rem; 
+      font-size: 0.8rem; 
+      font-weight: 700; 
+      color: $text-muted; 
+      text-transform: uppercase;
+      border-bottom: 1px solid $border;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    
+    .output-content { 
+      flex: 1; 
+      overflow: auto; 
+      padding: 0;
+      
+      .empty-state { padding: 2rem; text-align: center; color: $text-muted; font-style: italic; }
+      .error-box { padding: 1rem; color: #ef4743; font-family: 'JetBrains Mono', monospace; background: rgba(239, 71, 67, 0.1); }
+    }
+  }
+}
+
+// Data table styles
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  font-family: 'JetBrains Mono', monospace;
+
+  th { 
+    text-align: left; 
+    padding: 12px 16px; 
+    background: $bg-panel; 
+    color: $text-muted; 
+    position: sticky; 
+    top: 0; 
+    border-bottom: 1px solid $border;
+  }
+  
+  td { 
+    padding: 10px 16px; 
+    border-bottom: 1px solid $border; 
+    color: $text-main; 
+  }
+  
+  tr:hover td { background: rgba(255,255,255,0.03); }
+}
+
+// Modal styles
+.modal-overlay {
+  position: fixed; inset: 0; 
+  background: rgba(0,0,0,0.7); 
+  backdrop-filter: blur(4px);
+  z-index: 100; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  
+  .modal-box {
+    background: $bg-panel; 
+    border: 1px solid $border; 
+    padding: 2rem; 
+    width: 90%; 
+    max-width: 450px; 
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    
+    h3 { margin-top: 0; color: $accent; display: flex; align-items: center; gap: 8px; }
+    p { line-height: 1.6; color: $text-main; margin-bottom: 2rem; }
+    
+    button { 
+      width: 100%; 
+      padding: 12px; 
+      background: $bg-app; 
+      color: $text-main; 
+      border: 1px solid $border; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-weight: 600;
+      &:hover { background: $border; }
+    }
+  }
+}
+
+// Responsive (mobile tabs)
+@media (max-width: 768px) {
+  .mobile-tab-bar {
+    display: flex !important; // make it visible
+    position: sticky;
+    top: 0;
+    z-index: 50; // keep it above content
+    background: $bg-panel;
+    border-bottom: 1px solid $border;
+  }
+  
+  // keep header above the tabs
+  .workspace__header {
+    position: relative;
+    z-index: 60;
+  }
+
+  // toggled classes (React)
+  .hidden-mobile { display: none !important; }
+
+  .panel-left, .panel-right {
+    width: 100%;
+    height: calc(100vh - 115px); // full height minus header + tab bar
+    border: none;
+  }
+
+  // Right panel stacks on mobile
+  .panel-right {
+    .editor-wrapper { flex: 1; } // editor takes most space
+    .action-bar-strip { height: 60px; padding: 0 0.5rem; } // slightly taller for touch targets
+    .output-wrapper { height: 40%; } // fixed result height at bottom
+    
+    // smaller buttons on mobile
+    .ab-right button { padding: 8px 10px; font-size: 0.8rem; }
+  }
+}

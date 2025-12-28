@@ -1,0 +1,7 @@
+node_modules/
+.env
+.DS_Store
+dist/
+ciphersql-backend/node_modules/
+ciphersql-backend/.env
+ciphersql-frontend/node_modules/
