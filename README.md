@@ -28,5 +28,5 @@ CipherSQL Studio is an interactive, AI-powered SQL learning platform designed to
 
 1. **Clone the repository**
    ```bash
-   git clone [https://github.com/YOUR_USERNAME/cipherSQLStudio.git](https://github.com/YOUR_USERNAME/cipherSQLStudio.git)
+   git clone [https://github.com/toadsage01/cipherSQLStudio.git](https://github.com/YOUR_USERNAME/cipherSQLStudio.git)
    cd cipherSQLStudio
