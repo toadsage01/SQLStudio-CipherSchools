@@ -5,7 +5,7 @@ const AssignmentSchema = new mongoose.Schema({
     description: { type: String, enum: ['Easy', 'Medium', 'Hard'] },
     question: { type: String, required: true },
     
-    // Used to render the schema/table info in the UI
+    // to render the schema/table info in the UI
     sampleTables: [{
         tableName: String,
         columns: [{
@@ -16,12 +16,12 @@ const AssignmentSchema = new mongoose.Schema({
         rows: Array 
     }],
 
-    // Unique schema name per assignment for Postgres 
+    // Unique schema name per assignment 
     postgresSchemaName: { type: String, required: true },
 
     expectedOutput: {
         type: { type: String, enum: ['table', 'single_value', 'count'] },
-        value: mongoose.Schema.Types.Mixed // flexible field to hold expected result
+        value: mongoose.Schema.Types.Mixed // flexible fields
     }
 }, { timestamps: true });
 

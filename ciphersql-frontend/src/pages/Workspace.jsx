@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import axios from 'axios';
-import { useTheme } from '../context/ThemeContext'; // theme from my context
+import { useTheme } from '../context/ThemeContext';
 import '../styles/Workspace.scss';
 
 const Workspace = () => {
   const { id } = useParams();
-  const { theme, toggleTheme } = useTheme(); // light/dark toggle state
+  const { theme, toggleTheme } = useTheme();
   
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
   const [assignment, setAssignment] = useState(null);
   const [sqlCode, setSqlCode] = useState("-- Loading...");
   const [result, setResult] = useState(null);
@@ -18,11 +20,11 @@ const Workspace = () => {
   const [hint, setHint] = useState(null);
   const [isHintLoading, setIsHintLoading] = useState(false);
   
-  // Mobile tab: flip between 'description' and 'editor'
   const [mobileTab, setMobileTab] = useState('description');
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/assignments/${id}`)
+    // UPDATED URL
+    axios.get(`${API_BASE}/api/assignments/${id}`)
       .then(res => {
         setAssignment(res.data);
         if(res.data.sampleTables?.[0]) {
@@ -30,19 +32,18 @@ const Workspace = () => {
         }
       })
       .catch(err => console.error(err));
-  }, [id]);
+  }, [id, API_BASE]);
 
   const handleRun = async () => {
     setIsLoading(true);
     setResult(null);
     setError(null);
     setIsCorrect(null);
-    
-    // On mobile, jump to the Editor tab so results are visible
     setMobileTab('editor');
 
     try {
-      const res = await axios.post('http://localhost:5000/api/assignments/run', {
+      // UPDATED URL
+      const res = await axios.post(`${API_BASE}/api/assignments/run`, {
         assignmentId: id,
         sql: sqlCode
       });
@@ -63,7 +64,8 @@ const Workspace = () => {
   const handleGetHint = async () => {
     setIsHintLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/assignments/hint', {
+      // UPDATED URL
+      const res = await axios.post(`${API_BASE}/api/assignments/hint`, {
         assignmentId: id,
         sql: sqlCode,
         error: error,
@@ -81,19 +83,15 @@ const Workspace = () => {
 
   return (
     <div className="workspace">
-      {/* HEADER */}
       <header className="workspace__header">
         <div className="header-left">
            <Link to="/" className="logo-text">CipherSQL <span>Studio</span></Link>
         </div>
-        
-        {/* Theme Toggle Button */}
         <button onClick={toggleTheme} className="theme-toggle" title="Toggle Theme">
           {theme === 'dark' ? '☀️' : '🌙'}
         </button>
       </header>
 
-      {/* Mobile tab bar (only shows on small screens) */}
       <div className="mobile-tab-bar">
         <button 
           className={mobileTab === 'description' ? 'active' : ''} 
@@ -110,7 +108,6 @@ const Workspace = () => {
       </div>
 
       <div className="workspace__main">
-        {/* Left panel: problem description (hidden when tab is 'editor') */}
         <div className={`panel-left ${mobileTab === 'editor' ? 'hidden-mobile' : ''}`}>
           <div className="panel-content">
             <h3>{assignment.title}</h3>
@@ -123,10 +120,10 @@ const Workspace = () => {
                 <div className="table-name"> {table.tableName}</div>
                 <div className="columns-list">
                   {table.columns.map((col, c) => (
-                     <div key={c} className="col-item">
-                       <span className="c-name">{col.columnName}</span>
-                       <span className="c-type">{col.dataType}</span>
-                     </div>
+                      <div key={c} className="col-item">
+                        <span className="c-name">{col.columnName}</span>
+                        <span className="c-type">{col.dataType}</span>
+                      </div>
                   ))}
                 </div>
               </div>
@@ -134,13 +131,12 @@ const Workspace = () => {
           </div>
         </div>
 
-        {/* Right panel: editor + output (hidden when tab is 'description') */}
         <div className={`panel-right ${mobileTab === 'description' ? 'hidden-mobile' : ''}`}>
           <div className="editor-wrapper">
             <Editor
               height="100%"
               defaultLanguage="sql"
-              theme={theme === 'dark' ? "vs-dark" : "light"} // Monaco theme tracks the app theme
+              theme={theme === 'dark' ? "vs-dark" : "light"}
               value={sqlCode}
               onChange={setSqlCode}
               options={{ minimap: { enabled: false }, fontSize: 14, padding: { top: 16 } }}
@@ -148,52 +144,50 @@ const Workspace = () => {
           </div>
 
           <div className="action-bar-strip">
-             <div className="ab-left">
-                {isCorrect === true && <span className="status-badge success"> Accepted</span>}
-                {isCorrect === false && <span className="status-badge fail"> Wrong Answer</span>}
-             </div>
-             <div className="ab-right">
-                 <button className="btn-hint" onClick={handleGetHint} disabled={isHintLoading}>
-                    {isHintLoading ? '...' : '💡 Hint'}
-                 </button>
-                 <button className="btn-run" onClick={handleRun} disabled={isLoading}>
-                    {isLoading ? '...' : '▶ Run'}
-                 </button>
-                 {/* <button className="btn-submit" disabled={!isCorrect}>Submit</button> */}
-             </div>
+              <div className="ab-left">
+                 {isCorrect === true && <span className="status-badge success"> Accepted</span>}
+                 {isCorrect === false && <span className="status-badge fail"> Wrong Answer</span>}
+              </div>
+              <div className="ab-right">
+                  <button className="btn-hint" onClick={handleGetHint} disabled={isHintLoading}>
+                     {isHintLoading ? '...' : '💡 Hint'}
+                  </button>
+                  <button className="btn-run" onClick={handleRun} disabled={isLoading}>
+                     {isLoading ? '...' : '▶ Run'}
+                  </button>
+              </div>
           </div>
 
           <div className="output-wrapper">
-             <div className="output-header">Execution Result</div>
-             <div className="output-content">
-                {error && <div className="error-box"> {error}</div>}
-                {!result && !error && <div className="empty-state">Run code to see results.</div>}
-                {result && (
-                  <div className="table-container">
-                    <table className="data-table">
-                      <thead>
-                        <tr>{Object.keys(result[0] || {}).map(k => <th key={k}>{k}</th>)}</tr>
-                      </thead>
-                      <tbody>
-                        {result.map((row, i) => (
-                          <tr key={i}>{Object.values(row).map((v, j) => <td key={j}>{v}</td>)}</tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-             </div>
+              <div className="output-header">Execution Result</div>
+              <div className="output-content">
+                 {error && <div className="error-box"> {error}</div>}
+                 {!result && !error && <div className="empty-state">Run code to see results.</div>}
+                 {result && (
+                   <div className="table-container">
+                     <table className="data-table">
+                       <thead>
+                         <tr>{Object.keys(result[0] || {}).map(k => <th key={k}>{k}</th>)}</tr>
+                       </thead>
+                       <tbody>
+                         {result.map((row, i) => (
+                           <tr key={i}>{Object.values(row).map((v, j) => <td key={j}>{v}</td>)}</tr>
+                         ))}
+                       </tbody>
+                     </table>
+                   </div>
+                 )}
+              </div>
           </div>
         </div>
       </div>
 
-      {/* for hint */}
       {hint && (
         <div className="modal-overlay" onClick={() => setHint(null)}>
           <div className="modal-box">
-             <h3>AI Assist</h3>
-             <p>{hint}</p>
-             <button onClick={() => setHint(null)}>Close</button>
+              <h3>AI Assist</h3>
+              <p>{hint}</p>
+              <button onClick={() => setHint(null)}>Close</button>
           </div>
         </div>
       )}

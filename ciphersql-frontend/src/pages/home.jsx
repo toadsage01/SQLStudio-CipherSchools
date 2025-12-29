@@ -8,19 +8,19 @@ const Home = () => {
   const [assignments, setAssignments] = useState([]);
   const { theme, toggleTheme } = useTheme();
 
+  // Use Environment Variable for URL
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
   useEffect(() => {
-    axios.get('http://localhost:5000/api/assignments')
+    axios.get(`${API_BASE}/api/assignments`)
       .then(res => setAssignments(res.data))
       .catch(err => console.error(err));
-  }, []);
+  }, [API_BASE]);
 
   return (
     <div className="home">
       <header className="home__header">
-        {/* Logo */}
         <div className="logo-main">CipherSQL <span>Studio</span></div>
-
-        {/* toggle*/}
         <div className="theme-toggle-wrapper">
             <button onClick={toggleTheme} className="theme-toggle" title="Toggle Theme">
               {theme === 'dark' ? '☀️' : '🌙'}
