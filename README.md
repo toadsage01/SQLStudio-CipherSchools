@@ -1,5 +1,8 @@
 # CipherSQL Studio 
 
+[Visit the live demo →](https://sql-studio-cipher-schools.vercel.app/)
+
+
 ![CipherSQL Studio Screenshot](/img0.png) 
 ![CipherSQL Studio Screenshot](/img1.png) 
 
