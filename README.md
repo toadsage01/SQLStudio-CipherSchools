@@ -2,6 +2,9 @@
 
 [Visit the live demo →](https://sql-studio-cipher-schools.vercel.app/)
 
+⚠️ Note: Backend hosted on Render (free tier). When idle, takes 30-60s to warmup.
+
+
 
 ![CipherSQL Studio Screenshot](/img0.png) 
 ![CipherSQL Studio Screenshot](/img1.png) 
